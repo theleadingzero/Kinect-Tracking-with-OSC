@@ -1,4 +1,4 @@
-#pragma once
+oscTracker#pragma once
 
 #include "MSAFluid.h"
 #include "MSATimer.h"
@@ -27,7 +27,7 @@
 
 using namespace MSA;
 
-class heapApp : public ofSimpleApp{
+class oscTracker : public ofSimpleApp{
 public:
 	void setup();
 	void update();
@@ -118,7 +118,7 @@ public:
 	
 };
 
-extern heapApp *myApp;
+extern oscTracker *myApp;
 
 
 

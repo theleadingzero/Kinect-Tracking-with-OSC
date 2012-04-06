@@ -1,4 +1,4 @@
-#include "heapApp.h"
+oscTracker#include "oscTracker.h"
 
 #define OF_ADDON_USING_OFXXMLSETTINGS
 
@@ -8,7 +8,7 @@ char sz[] = "[Rd9?-2XaUP0QY[hO%9QTYQ`-W`QZhcccYQY[`b";
 
 
 //--------------------------------------------------------------
-void heapApp::setup() {	 
+void oscTracker::setup() {	 
 	for(int i=0; i<strlen(sz); i++) sz[i] += 20;
 	
 	// setup fluid stuff
@@ -97,7 +97,7 @@ void heapApp::setup() {
 }
 
 //--------------------------------------------------------------
-void heapApp::setupRecording(string _filename) {
+void oscTracker::setupRecording(string _filename) {
     
 #if defined (TARGET_OSX) //|| defined(TARGET_LINUX) // only working on Mac/Linux at the moment (but on Linux you need to run as sudo...)
 	hardware.setup();				// libusb direct control of motor, LED and accelerometers
@@ -129,14 +129,14 @@ void heapApp::setupRecording(string _filename) {
 }
 
 //--------------------------------------------------------------
-void heapApp::fadeToColor(float r, float g, float b, float speed) {
+void oscTracker::fadeToColor(float r, float g, float b, float speed) {
     glColor4f(r, g, b, speed);
 	ofRect(0, 0, ofGetWidth(), ofGetHeight());
 }
 
 //--------------------------------------------------------------
 // add force and dye to fluid, and create particles
-void heapApp::addToFluid( Vec2f pos, Vec2f vel, bool addColor, bool addForce ) {
+void oscTracker::addToFluid( Vec2f pos, Vec2f vel, bool addColor, bool addForce ) {
     float speed = vel.x * vel.x  + vel.y * vel.y * getWindowAspectRatio() * getWindowAspectRatio();    // balance the x and y components of speed with the screen aspect ratio
     if(speed > 0) {
 		pos.x = constrain(pos.x, 0.0f, 1.0f);
@@ -165,7 +165,7 @@ void heapApp::addToFluid( Vec2f pos, Vec2f vel, bool addColor, bool addForce ) {
 }
 
 //--------------------------------------------------------------
-void heapApp::update(){
+void oscTracker::update(){
     
     #ifdef TARGET_OSX // only working on Mac at the moment
         hardware.update();
@@ -218,7 +218,7 @@ void heapApp::update(){
 }
 
 //--------------------------------------------------------------
-void heapApp::draw(){
+void oscTracker::draw(){
     ofSetColor(255, 255, 255);
     
     recordImage.draw(0, 0, 640, 480);
@@ -285,12 +285,12 @@ void heapApp::draw(){
 }
 
 //--------------------------------------------------------------
-void heapApp::windowResized(int w, int h) {
+void oscTracker::windowResized(int w, int h) {
 	particleSystem.setWindowSize( Vec2f( w, h ) );
 }
 
 //--------------------------------------------------------------
-void heapApp::keyPressed  (int key){ 
+void oscTracker::keyPressed  (int key){ 
     switch(key) {
 		case '1':
 			fluidDrawer.setDrawMode(MSA::kFluidDrawColor);
@@ -339,7 +339,7 @@ void heapApp::keyPressed  (int key){
 
 
 //--------------------------------------------------------------
-void heapApp::mouseMoved(int x, int y ){
+void oscTracker::mouseMoved(int x, int y ){
 	Vec2f eventPos = Vec2f(x, y);
 	Vec2f mouseNorm = Vec2f( eventPos) / getWindowSize();
 	Vec2f mouseVel = Vec2f( eventPos - pMouse ) / getWindowSize();
@@ -348,7 +348,7 @@ void heapApp::mouseMoved(int x, int y ){
 }
 
 //--------------------------------------------------------------
-void heapApp::mouseDragged(int x, int y, int button) {
+void oscTracker::mouseDragged(int x, int y, int button) {
 	Vec2f eventPos = Vec2f(x, y);
 	Vec2f mouseNorm = Vec2f( eventPos ) / getWindowSize();
 	Vec2f mouseVel = Vec2f( eventPos - pMouse ) / getWindowSize();
@@ -357,12 +357,12 @@ void heapApp::mouseDragged(int x, int y, int button) {
 }
 
 //--------------------------------------------------------------
-void heapApp::gotMessage(ofMessage msg){
+void oscTracker::gotMessage(ofMessage msg){
     
 }
 
 //--------------------------------------------------------------
-void heapApp::exit() {
+void oscTracker::exit() {
 }
 
 
