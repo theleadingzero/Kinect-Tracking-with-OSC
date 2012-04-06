@@ -76,19 +76,18 @@ void oscTracker::setup() {
     
     XML.loadFile("osc_settings.xml");
     receiverPort = XML.getValue("OSC:RECEIVER:PORT", 0);
-    senderHost = XML.getValue("OSC:SENDER:HOST", 0);
+    senderHost = XML.getValue("OSC:SENDER:HOST",  "localhost");
     senderPort = XML.getValue("OSC:SENDER:PORT", 0);
     
     // listen on the given port
 	receiver.setup( receiverPort );
-    //cout << "sending osc messages to host " << senderHost << " on port " << senderPort << "\n";
     cout << "listening for osc messages on port " << receiverPort << "\n";
     
 	current_msg_string = 0;
     
     // open an outgoing connection to HOST:PORT
-	sender.setup( "localhost", senderPort);
-    cout << " on port " << senderPort << "\n";
+	sender.setup(senderHost, senderPort);
+    cout << "sending osc messages to host " << senderHost << " on port " << senderPort << "\n";
     
     
     rightHandOpen = 0.5;
