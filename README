@@ -4,3 +4,13 @@ openframeworks app using ofxOpenNI to track a user, overal visuals over the hand
 
 Becky Stewart
 April 2012
+
+
+Requirements:
+
+ofxOpenNI
+ofxOsc
+ofxXmlSettings
+
+
+XML file osc_settings.xml holds the IP address and port information for OSC server and client.  File needs to in ./bin/data relative to project.

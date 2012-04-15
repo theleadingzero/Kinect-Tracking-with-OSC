@@ -1,4 +1,4 @@
-oscTracker#include "oscTracker.h"
+#include "oscTracker.h"
 
 #define OF_ADDON_USING_OFXXMLSETTINGS
 
@@ -55,7 +55,7 @@ void oscTracker::setup() {
 	pMouse = getWindowCenter();
 	resizeFluid			= true;
 	
-	ofEnableAlphaBlending();
+	//ofEnableAlphaBlending();
 	ofSetBackgroundAuto(true);
     
     // Kinect
@@ -76,7 +76,7 @@ void oscTracker::setup() {
     
     XML.loadFile("osc_settings.xml");
     receiverPort = XML.getValue("OSC:RECEIVER:PORT", 0);
-    senderHost = XML.getValue("OSC:SENDER:HOST",  "localhost");
+    senderHost = XML.getValue("OSC:SENDER:HOST", "localhost");
     senderPort = XML.getValue("OSC:SENDER:PORT", 0);
     
     // listen on the given port
@@ -86,13 +86,15 @@ void oscTracker::setup() {
 	current_msg_string = 0;
     
     // open an outgoing connection to HOST:PORT
-	sender.setup(senderHost, senderPort);
+	sender.setup( senderHost, senderPort);
     cout << "sending osc messages to host " << senderHost << " on port " << senderPort << "\n";
     
     
     rightHandOpen = 0.5;
     
     fluidDrawer.setDrawMode(MSA::kFluidDrawVectors);
+    circleSize = 100;
+    circleGrowth = 0.1;
 }
 
 //--------------------------------------------------------------
@@ -166,9 +168,9 @@ void oscTracker::addToFluid( Vec2f pos, Vec2f vel, bool addColor, bool addForce 
 //--------------------------------------------------------------
 void oscTracker::update(){
     
-    #ifdef TARGET_OSX // only working on Mac at the moment
-        hardware.update();
-    #endif
+#ifdef TARGET_OSX // only working on Mac at the moment
+    hardware.update();
+#endif
     
     // update all nodes
     recordContext.update();
@@ -206,14 +208,19 @@ void oscTracker::update(){
 		receiver.getNextMessage( &m );
         
 		// check for fader message
-		if ( m.getAddress() == "/1/fader1" )
+		if ( m.getAddress() == "/gloves/flexL" )
+		{
+			// read the argument as a float
+            leftHandOpen= m.getArgAsFloat( 0 );
+		}
+        if ( m.getAddress() == "/gloves/flexR" )
 		{
 			// read the argument as a float
             rightHandOpen= m.getArgAsFloat( 0 );
 		}
         
 	}
-
+    
 }
 
 //--------------------------------------------------------------
@@ -253,28 +260,44 @@ void oscTracker::draw(){
         int neckX = trackedUser->neck.position[0].X;  
         int neckY = trackedUser->neck.position[0].Y;  
         int neckZ = trackedUser->neck.position[0].Z; 
-
-        ofColor(100, 0, 200);
-        ofEllipse(leftHandX, leftHandY, 200*rightHandOpen, 200*rightHandOpen);
-        ofEllipse(rightHandX, rightHandY, 10, 10);
         
-        Vec2f eventPos = Vec2f(leftHandX, leftHandY);
-        Vec2f mouseNorm = Vec2f( eventPos) / getWindowSize();
-        Vec2f mouseVel = Vec2f( eventPos - pHands ) / getWindowSize();
-        addToFluid( mouseNorm, mouseVel, true, true );
-        pHands = eventPos;
+        //ofColor(100, 0, 200);
+        //ofEllipse(leftHandX, leftHandY, 200*rightHandOpen, 200*rightHandOpen);
+        //ofEllipse(rightHandX, rightHandY, 10, 10);
         
-        Vec2f eventPosS = Vec2f(rightHandX, rightHandY);
-        Vec2f mouseNormS = Vec2f( eventPosS ) / getWindowSize();
-        Vec2f mouseVelS = Vec2f( eventPosS - pMouse ) / getWindowSize();
-        addToFluid( mouseNormS, mouseVelS, false, true );
-        pHandsS = eventPosS;
-        fluidSolver.solverIterations = rightHandOpen*50;
+        ofEnableAlphaBlending(); 
+        ofSetColor(0, 150, 240, 2);
+        ofFill();
         
+        circleSize += circleGrowth;
+        if (circleSize > 110 || circleSize < 90) {
+            circleGrowth *= -1;
+        }
+        
+        for(int i=0; i<50; i++) {
+            ofCircle( leftHandX, leftHandY, (circleSize-i*1.5)*leftHandZ/2000.0*leftHandOpen);
+            ofCircle( rightHandX, rightHandY, (circleSize-i*1.5)*rightHandZ/2000.0*rightHandOpen);
+        }
+        ofDisableAlphaBlending();
+        
+        /*
+         Vec2f eventPos = Vec2f(leftHandX, leftHandY);
+         Vec2f mouseNorm = Vec2f( eventPos) / getWindowSize();
+         Vec2f mouseVel = Vec2f( eventPos - pHands ) / getWindowSize();
+         addToFluid( mouseNorm, mouseVel, true, true );
+         pHands = eventPos;
+         
+         Vec2f eventPosS = Vec2f(rightHandX, rightHandY);
+         Vec2f mouseNormS = Vec2f( eventPosS ) / getWindowSize();
+         Vec2f mouseVelS = Vec2f( eventPosS - pMouse ) / getWindowSize();
+         addToFluid( mouseNormS, mouseVelS, false, true );
+         pHandsS = eventPosS;
+         fluidSolver.solverIterations = rightHandOpen*50;
+         */
         
         // OSC
         ofxOscMessage m;
-        m.setAddress( "/kinect/neck/" );
+        m.setAddress( "/kinect/neck" );
         m.addIntArg( neckX );
         m.addIntArg( neckY );
         m.addIntArg( neckZ );

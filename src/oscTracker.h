@@ -1,4 +1,4 @@
-oscTracker#pragma once
+#pragma once
 
 #include "MSAFluid.h"
 #include "MSATimer.h"
@@ -56,15 +56,15 @@ public:
 	MSA::Vec2f				pMouse;
     MSA::Vec2f				pHands;
     MSA::Vec2f				pHandsS;
-		
+    
 	
 #ifdef USE_GUI 
 	ofxSimpleGuiToo	gui;
 #endif
     
-//    Kinect
+    //    Kinect
     
-  //  bool				isLive, isTracking, isRecording, isCloud, isCPBkgnd, isMasking;
+    //  bool				isLive, isTracking, isRecording, isCloud, isCPBkgnd, isMasking;
 	bool				isTrackingHands, isFiltering;
     
 	ofxOpenNIContext	recordContext;
@@ -98,6 +98,10 @@ public:
     void	setupRecording(string _filename = "");
     
     
+    float circleSize;
+    float circleGrowth;
+    
+    
     
     // OSC
     
@@ -112,6 +116,7 @@ public:
 	string			mouseButtonState;
     
     float       rightHandOpen;
+    float       leftHandOpen;
     
     
     ofxXmlSettings XML;

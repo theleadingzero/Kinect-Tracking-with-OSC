@@ -1,0 +1,9 @@
+<OSC>
+   <SENDER>
+       <HOST>169.254.179.240</HOST>
+       <PORT>9063</PORT>
+    </SENDER>
+    <RECEIVER>
+        <PORT>9062</PORT>
+    </RECEIVER>
+</OSC>
